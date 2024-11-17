@@ -17,41 +17,49 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import Link from "next/link";
 import { createAccount } from "@/lib/actions/user.actions";
+import OTPModel from "./OTPModel";
 
 type FormType = "sign-in" | "sign-up";
 
 const authFormSchema = (formType: FormType) => {
-    return z.object({
-        email : z.string().email(),
-        fullName : formType === "sign-up" ? z.string().min(2).max(50) : z.string().optional(),
-    })
-}
+  return z.object({
+    email: z.string().email(),
+    fullName:
+      formType === "sign-up"
+        ? z.string().min(2).max(50)
+        : z.string().optional(),
+  });
+};
 
 const AuthForm = ({ type }: { type: FormType }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [accountId , setAccountId] = useState(null);
+  const [accountId, setAccountId] = useState(null);
 
   const formSchema = authFormSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullName: " ", email : " "
+      fullName: " ",
+      email: " ",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsLoading(true); 
+    setIsLoading(true);
     setErrorMessage(" ");
-    try{
-      const user = await createAccount( { fullName : values.fullName || " " , email : values.email , })
-    setAccountId(user.accountId);
-    }catch{
-      setErrorMessage("Failed to create account. please try again later.")
-    }finally{
+    console.log("user");
+    try {
+      const user = await createAccount({
+        fullName: values.fullName || " ",
+        email: values.email,
+      });
+      setAccountId(user.accountId);
+    } catch {
+      setErrorMessage("Failed to create account. please try again later.");
+    } finally {
       setIsLoading(false);
     }
-   
   };
 
   return (
@@ -65,21 +73,26 @@ const AuthForm = ({ type }: { type: FormType }) => {
             <FormField
               control={form.control}
               name="fullName"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="shad-form-item">
-                    <FormLabel className="shad-form-label">Full Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter  your full name"
-                        className="shad-input"
-                        {...field}
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage className="shad-form-message" />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                console.log(field)
+
+                return (
+                  <FormItem>
+                    <div className="shad-form-item">
+                      <FormLabel className="shad-form-label">Full Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter your full name"
+                          className="shad-input"
+                          {...field}
+                          trim
+                        />
+                      </FormControl>
+                    </div>
+                    <FormMessage className="shad-form-message" />
+                  </FormItem>
+                )
+              }}
             />
           )}
 
@@ -95,6 +108,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
                       placeholder="Enter  your email"
                       className="shad-input"
                       {...field}
+                      trim
                     />
                   </FormControl>
                 </div>
@@ -136,6 +150,10 @@ const AuthForm = ({ type }: { type: FormType }) => {
         </form>
       </Form>
       {/* OTP verification  */}
+
+      {accountId && (
+        <OTPModel email={form.getValues("email")} accountId={accountId} />
+      )}
     </>
   );
 };

@@ -1,9 +1,29 @@
-import * as React from "react"
+
 
 import { cn } from "@/lib/utils"
+import { ComponentProps, forwardRef, useRef } from "react";
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
+ 
+
+const Input = forwardRef<HTMLInputElement, ComponentProps<"input"> & { trim ?: boolean}>(
   ({ className, type, ...props }, ref) => {
+  const shouldTrim = useRef(props.trim || false)
+
+   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value;
+      if(props.onChange) {
+        props.onChange({
+          ...event,
+          target: {
+            ...event.target,
+            value: shouldTrim.current ? value.trim() : value
+          }
+        })
+      }
+   }
+
+   delete props.trim
+
     return (
       <input
         type={type}
@@ -13,6 +33,7 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
         )}
         ref={ref}
         {...props}
+        onChange={handleOnChange}
       />
     )
   }

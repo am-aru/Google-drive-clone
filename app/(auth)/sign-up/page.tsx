@@ -1,6 +1,14 @@
-import AuthForm from '@/components/AuthForm'
-import React from 'react'
+import AuthForm from "@/components/AuthForm";
+import OTPModel from "@/components/OTPModel";
+import React from "react";
 
-const SignUp = () => <AuthForm type="sign-up" />
+const SignUp = () => {
+  return (
+    <>
+      <AuthForm type="sign-up" />
+      {/* <OTPModel  /> */}
+    </>
+  );
+};
 
-export default SignUp
+export default SignUp;
