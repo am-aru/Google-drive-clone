@@ -9,6 +9,8 @@ import React from "react";
 const layout = async ({ children }: { children: React.ReactNode }) => {
   const currentUser = await getCurrentUser();
 
+  console.log(currentUser)
+
   if (!currentUser) return redirect("/sign-in");
 
   return (
@@ -16,7 +18,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
       <Sidebar {...currentUser} />
       <section className="flex h-full flex-1 flex-col">
         {" "}
-        <MobileNavigation /> <Header />
+        <MobileNavigation {...currentUser}/> <Header />
         <div className="main-content">{children}</div>
       </section>
     </main>

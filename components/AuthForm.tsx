@@ -36,9 +36,13 @@ const AuthForm = ({ type }: { type: FormType }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [accountId, setAccountId] = useState(null);
 
+
+  // This function (authFormSchema) presumably generates a validation schema based on the type argument (e.g., login, register, etc.).
   const formSchema = authFormSchema(type);
+
+  // This ensures that the form knows the exact types of its fields, enhancing type safety.
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema), //It takes the formSchema and validates form input values against it.
     defaultValues: {
       fullName: " ",
       email: " ",
@@ -85,7 +89,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
                           placeholder="Enter your full name"
                           className="shad-input"
                           {...field}
-                          trim
+                          
                         />
                       </FormControl>
                     </div>
@@ -153,6 +157,10 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
       {accountId && (
         <OTPModel email={form.getValues("email")} accountId={accountId} />
+
+//         An OTP is sent to the user's email.
+// The OTPModel is rendered, allowing the user to enter the OTP for verification.
+
       )}
     </>
   );

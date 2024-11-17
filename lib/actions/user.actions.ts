@@ -33,6 +33,9 @@ const handleError = (error: unknown, message: string) => {
 export const sendEmailOTP = async ({ email }: { email: string }) => {
   const { account } = await createAdminClient();
   try {
+    // Create email token (OTP)
+    // Sends the user an email with a secret key for creating a session. If the provided user ID has not be registered, a new user will be created. Use the returned user ID and secret and submit a request to the POST /v1/account/sessions/token endpoint to complete the login process. The secret sent to the user's email is valid for 15 minutes.
+
     const session = await account.createEmailToken(ID.unique(), email);
     return session.userId;
   } catch (err) {
@@ -100,6 +103,12 @@ export const verifySecret = async ({
 };
 
 export const getCurrentUser = async () => {
+  const session = (await cookies()).get("appwrite-session");
+
+  if (!session) {
+    return null;
+  }
+
   const { databases, account } = await createSessionClient();
 
   const result = await account.get();

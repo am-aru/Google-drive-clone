@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { avatarPlaceholderUrl, navItems } from "./constants";
+import {  navItems } from "./constants";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -68,13 +68,13 @@ const Sidebar = ({fullName , avatar , email} :Props) => {
       />
       <div className="sidebar-user-info">
         <Image
-          src={avatarPlaceholderUrl}
+          src={avatar}
           alt="Avatar"
           width={44}
           height={44}
           className="sidebar-user-avatar"
         />
-        <div className="hidden lg-block">
+        <div className="hidden lg:block">
             <p className="subtitle-2 capitalize">
               {fullName}
             </p>
