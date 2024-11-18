@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import {  navItems } from "./constants";
+import {  avatarPlaceholderUrl, navItems } from "./constants";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -68,7 +68,7 @@ const Sidebar = ({fullName , avatar , email} :Props) => {
       />
       <div className="sidebar-user-info">
         <Image
-          src={avatar}
+          src={avatarPlaceholderUrl}
           alt="Avatar"
           width={44}
           height={44}
