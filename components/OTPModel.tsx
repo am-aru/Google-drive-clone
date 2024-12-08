@@ -1,4 +1,5 @@
 "use client";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -7,7 +8,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 import {
@@ -16,11 +16,12 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import React, { useState } from "react";
-import { Button } from "./ui/button";
-import { sendEmailOTP, verifySecret } from "@/lib/actions/user.actions";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { verifySecret, sendEmailOTP } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
 
-const OTPModel = ({
+const OtpModal = ({
   accountId,
   email,
 }: {
@@ -35,12 +36,19 @@ const OTPModel = ({
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsLoading(true);
+
+    console.log({ accountId, password });
+
     try {
       const sessionId = await verifySecret({ accountId, password });
-      if ({ sessionId }) router.push("/");
+
+      console.log({ sessionId });
+
+      if (sessionId) router.push("/");
     } catch (error) {
       console.log("Failed to verify OTP", error);
     }
+
     setIsLoading(false);
   };
 
@@ -53,8 +61,8 @@ const OTPModel = ({
       <AlertDialogContent className="shad-alert-dialog">
         <AlertDialogHeader className="relative flex justify-center">
           <AlertDialogTitle className="h2 text-center">
-            Enter your OTP
-            <img
+            Enter Your OTP
+            <Image
               src="/assets/icons/close-dark.svg"
               alt="close"
               width={20}
@@ -64,8 +72,8 @@ const OTPModel = ({
             />
           </AlertDialogTitle>
           <AlertDialogDescription className="subtitle-2 text-center text-light-100">
-            We've sent a code to{" "}
-            <span className="pl-1 text-brand"> {email}</span>
+            We&apos;ve sent a code to{" "}
+            <span className="pl-1 text-brand">{email}</span>
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -89,7 +97,7 @@ const OTPModel = ({
             >
               Submit
               {isLoading && (
-                <img
+                <Image
                   src="/assets/icons/loader.svg"
                   alt="loader"
                   width={24}
@@ -98,6 +106,7 @@ const OTPModel = ({
                 />
               )}
             </AlertDialogAction>
+
             <div className="subtitle-2 mt-2 text-center text-light-100">
               Didn't get a code?
               <Button
@@ -106,7 +115,6 @@ const OTPModel = ({
                 className="pl-1 text-brand"
                 onClick={handleResendOtp}
               >
-                {" "}
                 Click to resend
               </Button>
             </div>
@@ -117,4 +125,4 @@ const OTPModel = ({
   );
 };
 
-export default OTPModel;
+export default OtpModal;

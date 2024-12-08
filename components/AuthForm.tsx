@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import Link from "next/link";
-import { createAccount } from "@/lib/actions/user.actions";
+import { createAccount, signInUser } from "@/lib/actions/user.actions";
 import OTPModel from "./OTPModel";
 
 type FormType = "sign-in" | "sign-up";
@@ -36,7 +36,6 @@ const AuthForm = ({ type }: { type: FormType }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [accountId, setAccountId] = useState(null);
 
-
   // This function (authFormSchema) presumably generates a validation schema based on the type argument (e.g., login, register, etc.).
   const formSchema = authFormSchema(type);
 
@@ -54,10 +53,13 @@ const AuthForm = ({ type }: { type: FormType }) => {
     setErrorMessage(" ");
     console.log("user");
     try {
-      const user = await createAccount({
-        fullName: values.fullName || " ",
-        email: values.email,
-      });
+      const user =
+        type === "sign-up"
+          ? await createAccount({
+              fullName: values.fullName || " ",
+              email: values.email,
+            })
+          : await signInUser({ email: values.email });
       setAccountId(user.accountId);
     } catch {
       setErrorMessage("Failed to create account. please try again later.");
@@ -78,24 +80,25 @@ const AuthForm = ({ type }: { type: FormType }) => {
               control={form.control}
               name="fullName"
               render={({ field }) => {
-                console.log(field)
+                console.log(field);
 
                 return (
                   <FormItem>
                     <div className="shad-form-item">
-                      <FormLabel className="shad-form-label">Full Name</FormLabel>
+                      <FormLabel className="shad-form-label">
+                        Full Name
+                      </FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Enter your full name"
                           className="shad-input"
                           {...field}
-                          
                         />
                       </FormControl>
                     </div>
                     <FormMessage className="shad-form-message" />
                   </FormItem>
-                )
+                );
               }}
             />
           )}
@@ -158,9 +161,8 @@ const AuthForm = ({ type }: { type: FormType }) => {
       {accountId && (
         <OTPModel email={form.getValues("email")} accountId={accountId} />
 
-//         An OTP is sent to the user's email.
-// The OTPModel is rendered, allowing the user to enter the OTP for verification.
-
+        //         An OTP is sent to the user's email.
+        // The OTPModel is rendered, allowing the user to enter the OTP for verification.
       )}
     </>
   );
