@@ -25,6 +25,7 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
     async (acceptedFiles: File[]) => {
       setFiles(acceptedFiles);
 
+
       const uploadPromises = acceptedFiles.map(async (file) => {
         if (file.size > MAX_FILE_SIZE) {
           setFiles((prevFiles) =>
@@ -64,6 +65,8 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
     e.stopPropagation();
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
   };
+
+  
 
   return (
     <div {...getRootProps()} className="cursor-pointer">
