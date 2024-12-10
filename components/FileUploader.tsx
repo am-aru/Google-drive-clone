@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import { cn, convertFileToUrl, getFileType } from "@/lib/utils";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
-import { uploadFiles } from "@/lib/actions/file.actions";
 import { usePathname } from "next/navigation";
 import { MAX_FILE_SIZE } from "./constants";
 import Thumbnail from "./Thumbnail";
+import { uploadFile } from "@/lib/actions/file.actions";
 
 interface Props {
   ownerId: string;
@@ -44,7 +44,7 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
           });
         }
 
-        return uploadFiles({ file, ownerId, accountId, path }).then(
+        return uploadFile({ file, ownerId, accountId, path }).then(
           (uploadedFile) => {
             if (uploadedFile) {
               setFiles((prevFiles) =>
