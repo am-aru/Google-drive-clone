@@ -80,15 +80,12 @@ export const verifySecret = async ({
 
     const session = await account.createSession(accountId, password);
 
-    const token = (await cookies()).set("appwrite-session", session.secret, {
+    (await cookies()).set("appwrite-session", session.secret, {
       path: "/",
       httpOnly: true,
       sameSite: "strict",
       secure: true,
     });
-    if (!token) {
-      throw new Error("Session token is missing. Please log in again.");
-    }
 
     return parseStringify({ sessionId: session.$id });
   } catch (error) {
@@ -133,6 +130,7 @@ export const signInUser = async ({ email }: { email: string }) => {
   try {
     const existingUser = await getUserByEmail(email);
 
+    // User exists, send OTP
     if (existingUser) {
       await sendEmailOTP({ email });
       return parseStringify({ accountId: existingUser.accountId });
